@@ -31,13 +31,14 @@ namespace RestApiProject.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> UploadDocument([FromBody] UploadDocumentRequest request)
+        [Consumes("text/plain")]
+        public async Task<ActionResult> UploadDocument([FromQuery] string session,[FromBody] string rawDocument)
         {
             try
             {
                 DefaultHocrParser parse = new DefaultHocrParser();
-                HocrObject hocrObject = parse.Parse(request.RawDocument);
-                this.documentService.SetDocument(hocrObject, request.Session);
+                HocrObject hocrObject = parse.Parse(rawDocument);
+                this.documentService.SetDocument(hocrObject, session);
             }
             catch (Exception ex)
             {
