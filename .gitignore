@@ -1,1 +1,8 @@
-*.sln
+.vs/
+*.csproj.user
+bin/
+obj/
+_ReSharper.Caches/
+.hg/
+*.csproj.vspscc
+.hgignore
