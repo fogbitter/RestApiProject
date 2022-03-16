@@ -17,8 +17,6 @@ namespace RestApiProject.Controllers
 	[Route("api/[controller]")]
 	public class DocumentController : Controller
 	{
-		public const string Path = @"C:\Users\Эмиль\Desktop\document.png.hocr";
-
 		public IDocumentService documentService;
 		public IHocrParser hocrParser;
 
@@ -28,20 +26,29 @@ namespace RestApiProject.Controllers
 			this.hocrParser = hocrParser;
 		}
 
-		[HttpGet]
-		public HocrObject GetCurrentDocument(string session)
+		[HttpGet("session={session}")]
+		public ActionResult<HocrObject> GetCurrentDocument(string session)
 		{
-			return documentService.GetCurrentDocument(session);
+			HocrObject obj = documentService.GetCurrentDocument(session);
+			return this.Ok(obj)
 		}
 
-		[HttpGet]
-		public HocrObject GetDocumentByID(Guid documentID)
+		[HttpGet("documentID={documentID}")]
+		public ActionResult<HocrObject> GetDocumentByID(Guid documentID)
 		{
-			return documentService.GetDocumentByID(documentID);
+			HocrObject obj = documentService.GetDocumentByID(documentID);
+			return this.Ok(obj)
+		}
+
+		[HttpPatch]
+		public ActionResult SetCurrentDocument(string session, Guid documentID)
+		{
+			documentService.SetCurrent(session, documentID);
+			return this.Ok();
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> UploadDocument([FromQuery] string session, IFormFile file)
+		public ActionResult UploadDocument([FromQuery] string session, IFormFile file)
 		{
 			try
 			{
@@ -56,6 +63,20 @@ namespace RestApiProject.Controllers
 			{
 				return this.BadRequest(ex.ToString());
 			}
+			return this.Ok();
+		}
+
+		[HttpDelete("session={session}")]
+		public ActionResult DeleteCurrent(string session)
+		{
+			this.documentService.DeleteCurrentDocument(session);
+			return this.Ok();
+		}
+
+		[HttpDelete("documentID={documentID}")]
+		public ActionResult<bool> DeleteByID(Guid id)
+		{
+			this.documentService.DeleteDocumentByID(id);
 			return this.Ok();
 		}
 	}

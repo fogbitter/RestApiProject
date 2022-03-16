@@ -13,6 +13,6 @@ namespace RestApiProject.Interfaces
 		HocrObject GetCurrentDocument(string session);
 		HocrObject GetDocumentByID(Guid id);
 		void DeleteCurrentDocument(string session);
-		void DeleteDocumentByID(string session, Guid id);
+		void DeleteDocumentByID(Guid id);
 	}
 }

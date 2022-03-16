@@ -21,14 +21,17 @@ namespace RestApiProject.Services
 			return docList.GetCurrent().Document;
 		}
 
-		public HocrObject GetDocumentByID(string session, Guid id)
-		{
-			SavedDocumentList docList = this.GetDocumentList(session);
-			return docList.GetById(id).Document;
-		}
 		public HocrObject GetDocumentByID(Guid id)
 		{
-			throw new NotImplementedException();
+			foreach (KeyValuePair<string, SavedDocumentList> keyValue in container)
+			{
+				SavedDocument doc = container[keyValue.Key].GetById(id);
+				if (doc != null)
+				{
+					return doc.Document;
+				}
+			}
+			return null;
 		}
 
 		public SavedDocumentList GetDocumentList(string session)
@@ -59,12 +62,19 @@ namespace RestApiProject.Services
 			}
 		}
 
-		public void DeleteDocumentByID(string session, Guid id)
+		public void DeleteDocumentByID(Guid id)
 		{
 			lock (lockObject)
 			{
-				SavedDocumentList docList = this.GetDocumentList(session);
-				docList.DeleteByID(id);
+				foreach (KeyValuePair<string, SavedDocumentList> keyValue in container)
+				{
+					SavedDocument doc = container[keyValue.Key].GetById(id);
+					if (doc != null)
+					{
+						container[keyValue.Key].Delete(doc);
+						return;
+					}
+				}
 			}
 		}
 
@@ -126,6 +136,10 @@ namespace RestApiProject.Services
 		public void DeleteByID(Guid id)
 		{
 			SavedDocument doc = this.GetById(id);
+			this.Remove(doc);
+		}
+		public void Delete(SavedDocument doc)
+		{
 			this.Remove(doc);
 		}
 
