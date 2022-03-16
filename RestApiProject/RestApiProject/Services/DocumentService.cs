@@ -15,13 +15,13 @@ namespace RestApiProject.Services
         private Dictionary<string, SavedDocumentList> container = new Dictionary<string, SavedDocumentList>();
         private string lockObject = "lockObject";
 
-        public HocrObject GetCurrentDocument(string session)
+        public async Task<HocrObject> GetCurrentDocument(string session)
         {
 			SavedDocumentList docList = this.GetDocumentList(session);
 			return docList.GetCurrent().Document;
 		}
 
-		public HocrObject GetDocumentByID(Guid id)
+		public async Task<HocrObject> GetDocumentByID(Guid id)
 		{
 			foreach (KeyValuePair<string, SavedDocumentList> keyValue in container)
 			{
@@ -39,7 +39,7 @@ namespace RestApiProject.Services
 			return container.ContainsKey(session) ? container[session] : null;
 		}
 
-		public Guid AddDocument(HocrObject document, string session)
+		public async Task<Guid> AddDocument(HocrObject document, string session)
         {
 			Guid id = Guid.NewGuid();
             lock (lockObject)
@@ -53,7 +53,7 @@ namespace RestApiProject.Services
 			return id;
         }
 
-		public void DeleteCurrentDocument(string session)
+		public async Task DeleteCurrentDocument(string session)
 		{
 			lock (lockObject)
 			{
@@ -62,7 +62,7 @@ namespace RestApiProject.Services
 			}
 		}
 
-		public void DeleteDocumentByID(Guid id)
+		public async Task DeleteDocumentByID(Guid id)
 		{
 			lock (lockObject)
 			{
@@ -78,7 +78,7 @@ namespace RestApiProject.Services
 			}
 		}
 
-		public bool SetCurrent(string session, Guid id)
+		public async Task<bool> SetCurrent(string session, Guid id)
 		{
 			if (!container.ContainsKey(session))
 			{

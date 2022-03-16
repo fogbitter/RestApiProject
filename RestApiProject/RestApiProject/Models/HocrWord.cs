@@ -7,6 +7,6 @@ namespace RestApiProject.Models
 {
 	public class HocrWord : HocrElement
 	{
-
+		public string InnerText { get; set; } 
 	}
 }

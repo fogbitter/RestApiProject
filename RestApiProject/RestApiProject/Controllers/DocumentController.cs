@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -27,28 +28,28 @@ namespace RestApiProject.Controllers
 		}
 
 		[HttpGet("session={session}")]
-		public ActionResult<HocrObject> GetCurrentDocument(string session)
+		public async Task<ActionResult<HocrObject>> GetCurrentDocument(string session)
 		{
-			HocrObject obj = documentService.GetCurrentDocument(session);
-			return this.Ok(obj)
+			HocrObject obj = await documentService.GetCurrentDocument(session);
+			return this.Ok(obj);
 		}
 
 		[HttpGet("documentID={documentID}")]
-		public ActionResult<HocrObject> GetDocumentByID(Guid documentID)
+		public async Task<ActionResult<HocrObject>> GetDocumentByID(Guid documentID)
 		{
-			HocrObject obj = documentService.GetDocumentByID(documentID);
-			return this.Ok(obj)
+			HocrObject obj = await documentService.GetDocumentByID(documentID);
+			return this.Ok(obj);
 		}
 
 		[HttpPatch]
-		public ActionResult SetCurrentDocument(string session, Guid documentID)
+		public async Task<ActionResult> SetCurrentDocument(string session, Guid documentID)
 		{
-			documentService.SetCurrent(session, documentID);
+			await documentService.SetCurrent(session, documentID);
 			return this.Ok();
 		}
 
 		[HttpPost]
-		public ActionResult UploadDocument([FromQuery] string session, IFormFile file)
+		public async Task<ActionResult> UploadDocument([FromQuery] string session, IFormFile file)
 		{
 			try
 			{
@@ -57,7 +58,7 @@ namespace RestApiProject.Controllers
 				{
 					hocrObject = this.hocrParser.Parse(sr);
 				}
-				this.documentService.AddDocument(hocrObject, session);
+				await this.documentService.AddDocument(hocrObject, session);
 			}
 			catch (Exception ex)
 			{
@@ -67,16 +68,16 @@ namespace RestApiProject.Controllers
 		}
 
 		[HttpDelete("session={session}")]
-		public ActionResult DeleteCurrent(string session)
+		public async Task<ActionResult> DeleteCurrent(string session)
 		{
-			this.documentService.DeleteCurrentDocument(session);
+			await this .documentService.DeleteCurrentDocument(session);
 			return this.Ok();
 		}
 
 		[HttpDelete("documentID={documentID}")]
-		public ActionResult<bool> DeleteByID(Guid id)
+		public async Task<ActionResult> DeleteByID(Guid id)
 		{
-			this.documentService.DeleteDocumentByID(id);
+			await this.documentService.DeleteDocumentByID(id);
 			return this.Ok();
 		}
 	}

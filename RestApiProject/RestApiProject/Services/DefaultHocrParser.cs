@@ -17,6 +17,7 @@ namespace RestApiProject.Services
 			XmlDocument xDoc = new XmlDocument();
 			xDoc.Load(reader);
 
+			//reader.
 			XmlElement? xRoot = xDoc.DocumentElement;
 			foreach (XmlElement xnode in xRoot)
 			{
@@ -85,6 +86,7 @@ namespace RestApiProject.Services
 		private void WordParse(XmlNode node, HocrWord word)
 		{
 			this.ElementParse(node, word);
+			word.InnerText = node.InnerText;
 		}
 
 		private void ElementParse(XmlNode node, HocrElement element)

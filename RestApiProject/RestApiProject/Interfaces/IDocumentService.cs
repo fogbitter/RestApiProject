@@ -8,11 +8,11 @@ namespace RestApiProject.Interfaces
 {
 	public interface IDocumentService
 	{
-		Guid AddDocument(HocrObject document, string session);
-		bool SetCurrent(string session, Guid id);
-		HocrObject GetCurrentDocument(string session);
-		HocrObject GetDocumentByID(Guid id);
-		void DeleteCurrentDocument(string session);
-		void DeleteDocumentByID(Guid id);
+		Task<Guid> AddDocument(HocrObject document, string session);
+		Task<bool> SetCurrent(string session, Guid id);
+		Task<HocrObject> GetCurrentDocument(string session);
+		Task<HocrObject> GetDocumentByID(Guid id);
+		Task DeleteCurrentDocument(string session);
+		Task DeleteDocumentByID(Guid id);
 	}
 }
